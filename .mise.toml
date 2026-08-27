@@ -1,0 +1,12 @@
+# mise install   # install all versions defined in .mise.toml
+# mise current   # show active versions in current dir
+# mise use go@1.26.3   # add/update a version in this .mise.toml
+
+[tools]
+go = "1.26.3"
+task = "3.49.1"
+"aqua:golangci/golangci-lint" = "2.13.1"
+
+# `uv` is the Python package installer used to resolve the `pipx:` entries.
+uv = "0.11.7"
+"pipx:pre-commit" = "4.6.0"

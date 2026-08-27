@@ -1,0 +1,78 @@
+version: "3"
+
+vars:
+  BUILD_DIR: ./build
+  BINARY_NAME: opentofu-kms-stackit
+  CMD_PATH: ./cmd/opentofu-kms-stackit
+  PREFIX: /usr/local
+
+tasks:
+  build:
+    desc: Builds the binary into the ./build directory
+    sources:
+      - "**/*.go"
+      - go.mod
+      - go.sum
+    generates:
+      - "{{.BUILD_DIR}}/{{.BINARY_NAME}}"
+    cmds:
+      - go build -o {{.BUILD_DIR}}/{{.BINARY_NAME}} {{.CMD_PATH}}
+
+  clean:
+    desc: Removes build artifacts
+    cmds:
+      - rm -rf {{.BUILD_DIR}}
+
+  install:
+    desc: "Builds and installs the binary to PREFIX/bin (default /usr/local, override with PREFIX=...)"
+    deps:
+      - build
+    cmds:
+      - mkdir -p {{.PREFIX}}/bin
+      - cp {{.BUILD_DIR}}/{{.BINARY_NAME}} {{.PREFIX}}/bin
+
+  test:
+    desc: Runs all tests
+    cmds:
+      - go test ./...
+
+  vet:
+    desc: Runs go vet
+    cmds:
+      - go vet ./...
+
+  lint:
+    desc: Runs golangci-lint
+    cmds:
+      - golangci-lint run
+
+  fmt:
+    desc: Applies gofmt and goimports via golangci-lint
+    cmds:
+      - golangci-lint fmt
+
+  setup:
+    desc: "Installs the toolchain (mise) and wires up git hooks (pre-commit)."
+    cmds:
+      - mise install
+      - pre-commit install
+
+  hooks:install:
+    desc: "(Re)installs the pre-commit hook into .git/hooks/."
+    cmds:
+      - pre-commit install
+
+  hooks:uninstall:
+    desc: Removes the pre-commit hook from .git/hooks/.
+    cmds:
+      - pre-commit uninstall
+
+  hooks:run:
+    desc: Runs the pre-commit hooks on currently staged files.
+    cmds:
+      - pre-commit run
+
+  hooks:run:all:
+    desc: Runs the pre-commit hooks across the whole repo.
+    cmds:
+      - pre-commit run --all-files --show-diff-on-failure

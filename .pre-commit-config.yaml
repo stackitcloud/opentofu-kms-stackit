@@ -1,0 +1,44 @@
+# Run `task setup` (or `pre-commit install`) once per clone to wire this up.
+# pre-commit stashes unstaged changes before running, so partial staging is
+# preserved.
+#
+# Tool binaries come from mise (.mise.toml). `repo: local` means pre-commit
+# does not manage tool versions itself, it shells out to whatever
+# `golangci-lint` and `go` resolve to on PATH.
+
+default_install_hook_types: [pre-commit]
+default_stages: [pre-commit]
+
+repos:
+  - repo: local
+    hooks:
+      # Applies gofmt and goimports as configured in .golangci.yml.
+      - id: golangci-lint-fmt
+        name: golangci-lint fmt
+        entry: golangci-lint fmt
+        language: system
+        types: [go]
+        pass_filenames: false
+        require_serial: true
+
+      - id: golangci-lint
+        name: golangci-lint
+        entry: golangci-lint run --fix
+        language: system
+        types_or: [go, go-mod, go-sum]
+        pass_filenames: false
+        require_serial: true # fix "parallel golangci-lint is running" error
+
+      - id: go-test
+        name: go test
+        entry: go test ./...
+        language: system
+        types_or: [go, go-mod, go-sum]
+        pass_filenames: false
+
+      - id: go-mod-tidy
+        name: go mod tidy
+        entry: go mod tidy
+        language: system
+        types_or: [go, go-mod, go-sum]
+        pass_filenames: false

@@ -1,0 +1,95 @@
+version: "2"
+output:
+  formats:
+    text:
+      path: stdout
+linters:
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - contextcheck
+    - durationcheck
+    - errcheck
+    - errchkjson
+    - errorlint
+    - exhaustive
+    - gocheckcompilerdirectives
+    - goconst
+    - gocritic
+    - gocyclo
+    - gosec
+    - govet
+    - ineffassign
+    - makezero
+    - misspell
+    - nakedret
+    - nilerr
+    - nilnesserr
+    - noctx
+    - prealloc
+    - reassign
+    - recvcheck
+    - staticcheck
+    - unconvert
+    - unparam
+    - unused
+  settings:
+    errcheck:
+      check-type-assertions: false
+      check-blank: false
+    goconst:
+      min-len: 3
+      min-occurrences: 5
+    gocritic:
+      enabled-tags:
+        - performance
+      settings:
+        captLocal:
+          paramsOnly: true
+        rangeValCopy:
+          sizeThreshold: 32
+    gocyclo:
+      min-complexity: 10
+    nakedret:
+      max-func-lines: 30
+    prealloc:
+      simple: true
+      range-loops: true
+      for-loops: false
+    unparam:
+      check-exported: false
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - errcheck
+          - goconst
+          - gocyclo
+          - gosec
+          - unparam
+        path: _test(ing)?\.go
+      - linters:
+          - gocritic
+        path: _test\.go
+        text: (unnamedResult|exitAfterDefer)
+      - linters:
+          - gocritic
+        text: '(hugeParam|rangeValCopy):'
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    gofmt:
+      simplify: true
+    goimports:
+      local-prefixes:
+        - github.com/stackitcloud/opentofu-kms-stackit
+  exclusions:
+    generated: lax
