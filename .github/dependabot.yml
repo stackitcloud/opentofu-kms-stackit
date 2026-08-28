@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    cooldown:
+      default-days: 7
+      # STACKIT SDK updates are wanted as soon as they land.
+      exclude: ["github.com/stackitcloud*"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    cooldown:
+      default-days: 7
+    # One PR for all action bumps instead of one per action.
+    groups:
+      actions:
+        patterns: ["*"]
