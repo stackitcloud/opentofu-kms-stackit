@@ -13,6 +13,9 @@ For publishing a release, see [RELEASE.md](RELEASE.md).
 - [Project layout](#project-layout)
 - [Conventions](#conventions)
 - [Pull requests](#pull-requests)
+- [Reporting bugs and requesting features](#reporting-bugs-and-requesting-features)
+- [Reporting a security issue](#reporting-a-security-issue)
+- [License](#license)
 
 ## Getting started
 
@@ -102,9 +105,46 @@ symbols.
 
 ## Pull requests
 
-- Link the issue your change relates to, or describe the problem it solves.
-- Add or update unit tests for behaviour you change.
-- Make sure `task lint` and `task test` pass, since CI checks both.
-- Keep the change focused. Unrelated cleanups are easier to review separately.
+1. Check the open and recently closed [issues](../../issues) and
+   [pull requests](../../pulls), so you do not repeat work someone else has done.
+2. Fork the repository and branch off an up-to-date `main`.
+3. Make your change, with tests, and write a descriptive commit message.
+4. Open a pull request. CI runs the lint, test and build jobs on it.
+5. A maintainer reviews it. Push additional commits to address feedback, the
+   history is squashed when the pull request is merged.
+
+What a reviewable pull request looks like:
+
+- The issue it relates to is linked, or the problem it solves is described.
+- Unit tests cover the behaviour you changed.
+- `task lint` and `task test` pass locally, since CI checks both anyway.
+- The change is focused. Unrelated cleanups are easier to review separately.
 
 The pull request template lists the same points as a checklist.
+
+## Reporting bugs and requesting features
+
+Open an [issue](../../issues/new/choose) and pick the bug report or feature
+request template. Before filing a bug:
+
+- Search the existing issues, yours may already be reported.
+- Reproduce it on the latest release. Fixes land on the current version only.
+- Include the output of `opentofu-kms-stackit -version`, your OpenTofu version,
+  and your operating system and CPU architecture.
+
+**Redact credentials and identifiers before pasting logs.** Service account keys,
+tokens and private keys never belong in an issue, and project, key ring and key
+IDs identify your infrastructure. OpenTofu shows this binary's stderr, so error
+output is worth reading through before you post it.
+
+## Reporting a security issue
+
+Report vulnerabilities through the [security policy](../../security/policy)
+rather than a public issue, so a fix can be prepared before the problem is
+widely known.
+
+## License
+
+This project is licensed under the Apache License 2.0, see [LICENSE](LICENSE).
+Contributions are accepted under the same license. Source files carry no
+per-file copyright header.
