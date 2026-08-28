@@ -6,6 +6,7 @@
 go = "1.26.3"
 task = "3.49.1"
 "aqua:golangci/golangci-lint" = "2.13.1"
+"aqua:goreleaser/goreleaser" = "2.12.7"
 
 # `uv` is the Python package installer used to resolve the `pipx:` entries.
 uv = "0.11.7"

@@ -51,6 +51,16 @@ tasks:
     cmds:
       - golangci-lint fmt
 
+  release:check:
+    desc: Validates .goreleaser.yaml
+    cmds:
+      - goreleaser check
+
+  release:snapshot:
+    desc: Builds all release archives locally into ./dist, without publishing
+    cmds:
+      - goreleaser release --snapshot --clean --skip=publish
+
   setup:
     desc: "Installs the toolchain (mise) and wires up git hooks (pre-commit)."
     cmds:

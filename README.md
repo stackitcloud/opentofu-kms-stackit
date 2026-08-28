@@ -1,5 +1,6 @@
 # opentofu-kms-stackit
 
+[![CI](https://github.com/stackitcloud/opentofu-kms-stackit/actions/workflows/ci.yaml/badge.svg)](https://github.com/stackitcloud/opentofu-kms-stackit/actions/workflows/ci.yaml)
 [![OpenTofu](https://img.shields.io/badge/OpenTofu-1.12+-FFDA18?logo=opentofu&logoColor=black)](https://opentofu.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
@@ -12,17 +13,68 @@ You will not invoke this program directly: OpenTofu launches it as a subprocess 
 ## Table of Contents
 
 - [Installation](#installation)
+  - [Install script](#install-script)
+  - [Pre-compiled binary](#pre-compiled-binary)
+  - [From source](#from-source)
 - [Configuration](#configuration)
   - [Authentication](#authentication)
   - [Key selection](#key-selection)
 - [Usage](#usage)
 - [Development](#development)
+  - [Releasing](#releasing)
 - [Related links](#related-links)
 
 ## Installation
 
 OpenTofu launches this binary via the `command` array in your `key_provider "external"` block (see [Usage](#usage)).
 Either put it on your `PATH` and reference it by name, or point `command` at its full path directly.
+
+Prebuilt binaries are published on the [Releases](https://github.com/stackitcloud/opentofu-kms-stackit/releases) page for Linux and macOS, on both amd64 and arm64.
+
+### Install script
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/stackitcloud/opentofu-kms-stackit/main/install.sh | sh
+```
+
+The script downloads the release archive for your platform, verifies it against `checksums.txt` and installs the binary to `/usr/local/bin`.
+It asks for `sudo` only when that directory is not writable.
+
+Two environment variables change what it does:
+
+| Variable      | Default        | Effect                                    |
+| ------------- | -------------- | ----------------------------------------- |
+| `VERSION`     | latest release | Release tag to install, e.g. `v0.1.0`     |
+| `INSTALL_DIR` | `/usr/local/bin` | Directory to install the binary into    |
+
+To pin a version or install without root:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/stackitcloud/opentofu-kms-stackit/main/install.sh -o install.sh
+VERSION=v0.1.0 INSTALL_DIR="$HOME/.local/bin" sh install.sh
+```
+
+Check what you installed:
+
+```sh
+opentofu-kms-stackit -version
+# opentofu-kms-stackit 0.1.0 (commit 9fceb02..., built 2026-08-28T10:22:56Z)
+```
+
+This is the only invocation that does not speak the key provider protocol. Builds from source report `dev`, since the version is stamped in by the release pipeline.
+
+### Pre-compiled binary
+
+1. Download the archive for your operating system and CPU architecture from the [Releases](https://github.com/stackitcloud/opentofu-kms-stackit/releases) page
+2. Verify it against `checksums.txt`:
+
+   ```sh
+   sha256sum --check --ignore-missing checksums.txt
+   ```
+
+3. Extract it and move `opentofu-kms-stackit` to a directory on your `PATH`
+
+### From source
 
 Install with Go:
 
@@ -141,6 +193,26 @@ task hooks:run:all # all hooks, whole repo
 ```
 
 To bypass the hook for a single commit, use `git commit --no-verify`.
+
+CI runs the same checks on every pull request, plus a snapshot build of all release targets (`.github/workflows/ci.yaml`).
+
+### Releasing
+
+Releases are cut by pushing a semver tag:
+
+```shell
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+`.github/workflows/release.yaml` then runs [GoReleaser](https://goreleaser.com), which builds the archives for linux and darwin on amd64 and arm64, writes `checksums.txt` and creates the GitHub release with generated release notes. Tags with a prerelease suffix such as `v0.1.0-rc1` are marked as pre-release.
+
+Check the release config and build the archives locally before tagging:
+
+```shell
+task release:check    # validates .goreleaser.yaml
+task release:snapshot # writes ./dist, publishes nothing
+```
 
 ## Related links
 

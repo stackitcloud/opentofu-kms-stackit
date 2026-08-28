@@ -3,20 +3,34 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
 
-	"github.com/stackitcloud/opentofu-kms-stackit/pkg/config"
-	"github.com/stackitcloud/opentofu-kms-stackit/pkg/keyprovider"
+	"github.com/stackitcloud/opentofu-kms-stackit/internal/config"
+	"github.com/stackitcloud/opentofu-kms-stackit/internal/keyprovider"
 
 	stackitconfig "github.com/stackitcloud/stackit-sdk-go/core/config"
 	"github.com/stackitcloud/stackit-sdk-go/services/kms/v1api"
 )
 
+// Set by goreleaser via ldflags; "dev" for local builds.
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
 	// stdout is reserved for the protocol; all diagnostics go to stderr.
 	log.SetOutput(os.Stderr)
+
+	// Checked before the protocol claims stdout.
+	if hasVersionFlag(os.Args[1:]) {
+		fmt.Printf("opentofu-kms-stackit %s (commit %s, built %s)\n", version, commit, date)
+		return
+	}
 
 	if err := writeHeader(os.Stdout); err != nil {
 		log.Fatalf("failed to write header: %v", err)
@@ -56,6 +70,15 @@ func main() {
 	if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
 		log.Fatalf("failed to write output: %v", err)
 	}
+}
+
+func hasVersionFlag(args []string) bool {
+	for _, arg := range args {
+		if arg == "-version" || arg == "--version" {
+			return true
+		}
+	}
+	return false
 }
 
 // writeHeader writes the single-line protocol header followed by a newline.

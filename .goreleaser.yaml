@@ -1,0 +1,46 @@
+# Release config for `goreleaser release`, run by .github/workflows/release.yaml
+# on every pushed v* tag. Try it locally with `task release:snapshot`.
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: opentofu-kms-stackit
+    main: ./cmd/opentofu-kms-stackit
+    binary: opentofu-kms-stackit
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+
+archives:
+  # install.sh builds asset names from this template, keep them in sync.
+  - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+release:
+  # Tags with a prerelease indicator (v0.1.0-rc1) are marked as pre-release.
+  prerelease: auto
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
