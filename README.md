@@ -21,7 +21,6 @@ You will not invoke this program directly: OpenTofu launches it as a subprocess 
   - [Key selection](#key-selection)
 - [Usage](#usage)
 - [Development](#development)
-  - [Releasing](#releasing)
 - [Related links](#related-links)
 
 ## Installation
@@ -154,65 +153,9 @@ terraform {
 
 ## Development
 
-Tool versions are pinned in `.mise.toml` ([mise](https://mise.jdx.dev)) and tasks live in `taskfile.yaml` ([Task](https://taskfile.dev)).
-
-mise provides the toolchain, including `task` itself, so install it first:
-
-```shell
-brew install mise                # or see https://mise.jdx.dev/installing-mise.html
-eval "$(mise activate zsh)"      # add this line to ~/.zshrc as well
-```
-
-Then, once per clone, trust the config and install everything:
-
-```shell
-mise trust
-mise install
-task setup
-```
-
-`mise install` gives you go, task, golangci-lint and pre-commit at the pinned versions. `task setup` re-runs `mise install` and installs the git hook via `pre-commit install`. The hook defined in `.pre-commit-config.yaml` runs on every `git commit` when Go files change:
-
-| Hook               | Command                  | Effect                                          |
-| ------------------ | ------------------------ | ----------------------------------------------- |
-| golangci-lint fmt  | `golangci-lint fmt`      | Applies gofmt and goimports                     |
-| golangci-lint      | `golangci-lint run --fix` | Lints and type-checks, fixes what it can       |
-| go test            | `go test ./...`          | Runs the test suite                             |
-| go mod tidy        | `go mod tidy`            | Keeps `go.mod` and `go.sum` in sync             |
-
-A hook that rewrites a file fails the commit, so review the changes and `git add` them before committing again.
-
-Linter selection and exclusions live in `.golangci.yml`. Run the checks without committing:
-
-```shell
-task lint          # golangci-lint run
-task fmt           # golangci-lint fmt
-task test          # go test ./...
-task hooks:run     # all hooks, staged files only
-task hooks:run:all # all hooks, whole repo
-```
-
-To bypass the hook for a single commit, use `git commit --no-verify`.
-
-CI runs the same checks on every pull request, plus a snapshot build of all release targets (`.github/workflows/ci.yaml`).
-
-### Releasing
-
-Releases are cut by pushing a semver tag:
-
-```shell
-git tag v0.1.0
-git push origin v0.1.0
-```
-
-`.github/workflows/release.yaml` then runs [GoReleaser](https://goreleaser.com), which builds the archives for linux and darwin on amd64 and arm64, writes `checksums.txt` and creates the GitHub release with generated release notes. Tags with a prerelease suffix such as `v0.1.0-rc1` are marked as pre-release.
-
-Check the release config and build the archives locally before tagging:
-
-```shell
-task release:check    # validates .goreleaser.yaml
-task release:snapshot # writes ./dist, publishes nothing
-```
+Setup, the git hook and the checks a change has to pass are documented in
+[CONTRIBUTING.md](CONTRIBUTING.md). Release process is documented in
+[RELEASE.md](RELEASE.md).
 
 ## Related links
 
