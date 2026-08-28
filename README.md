@@ -60,8 +60,6 @@ opentofu-kms-stackit -version
 # opentofu-kms-stackit 0.1.0 (commit 9fceb02..., built 2026-08-28T10:22:56Z)
 ```
 
-This is the only invocation that does not speak the key provider protocol. Builds from source report `dev`, since the version is stamped in by the release pipeline.
-
 ### Pre-compiled binary
 
 1. Download the archive for your operating system and CPU architecture from the [Releases](https://github.com/stackitcloud/opentofu-kms-stackit/releases) page
