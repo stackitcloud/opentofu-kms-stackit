@@ -7,6 +7,7 @@ For publishing a release, see [RELEASE.md](RELEASE.md).
 
 ## Table of Contents
 
+- [Code of Conduct](#code-of-conduct)
 - [Getting started](#getting-started)
 - [The git hook](#the-git-hook)
 - [Running the checks](#running-the-checks)
@@ -16,6 +17,12 @@ For publishing a release, see [RELEASE.md](RELEASE.md).
 - [Reporting bugs and requesting features](#reporting-bugs-and-requesting-features)
 - [Reporting a security issue](#reporting-a-security-issue)
 - [License](#license)
+
+## Code of Conduct
+
+This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). By taking
+part you agree to uphold it. Report unacceptable behaviour privately to a
+maintainer listed in [CODEOWNERS](.github/CODEOWNERS), not in a public issue.
 
 ## Getting started
 

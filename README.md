@@ -153,7 +153,8 @@ terraform {
 
 Setup, the git hook and the checks a change has to pass are documented in
 [CONTRIBUTING.md](CONTRIBUTING.md). Release process is documented in
-[RELEASE.md](RELEASE.md).
+[RELEASE.md](RELEASE.md). Participation is covered by the
+[Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Related links
 
