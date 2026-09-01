@@ -20,7 +20,7 @@ For publishing a release, see [RELEASE.md](RELEASE.md).
 
 ## Code of Conduct
 
-This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). By taking
+This project follows the [CNCF Code of Conduct](CODE_OF_CONDUCT.md). By taking
 part you agree to uphold it. Report unacceptable behaviour privately to a
 maintainer listed in [CODEOWNERS](.github/CODEOWNERS), not in a public issue.
 
