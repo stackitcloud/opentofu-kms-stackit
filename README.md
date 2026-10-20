@@ -13,6 +13,7 @@ You will not invoke this program directly: OpenTofu launches it as a subprocess 
 ## Table of Contents
 
 - [Installation](#installation)
+  - [mise](#mise)
   - [Install script](#install-script)
   - [Pre-compiled binary](#pre-compiled-binary)
   - [From source](#from-source)
@@ -29,6 +30,25 @@ OpenTofu launches this binary via the `command` array in your `key_provider "ext
 Either put it on your `PATH` and reference it by name, or point `command` at its full path directly.
 
 Prebuilt binaries are published on the [Releases](https://github.com/stackitcloud/opentofu-kms-stackit/releases) page for Linux and macOS, on both amd64 and arm64.
+
+### mise
+
+Install with [mise](https://mise.jdx.dev/):
+
+```sh
+mise use -g github:stackitcloud/opentofu-kms-stackit
+```
+
+Or pin it per project in `mise.toml`:
+
+```toml
+[tools]
+"github:stackitcloud/opentofu-kms-stackit" = "0.0.1"
+```
+
+mise skips pre-releases when it resolves `latest`.
+To install a pre-release such as `v0.0.1-rc2`, give its version explicitly: `mise use -g github:stackitcloud/opentofu-kms-stackit@0.0.1-rc2`.
+```
 
 ### Install script
 
