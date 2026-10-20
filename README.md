@@ -48,7 +48,6 @@ Or pin it per project in `mise.toml`:
 
 mise skips pre-releases when it resolves `latest`.
 To install a pre-release such as `v0.0.1-rc2`, give its version explicitly: `mise use -g github:stackitcloud/opentofu-kms-stackit@0.0.1-rc2`.
-```
 
 ### Install script
 
