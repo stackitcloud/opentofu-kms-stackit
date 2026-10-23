@@ -38,6 +38,8 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # rc and final tags can share commits.
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
           # Base64 of the Developer ID Application .p12.
           MACOS_SIGN_P12: ${{ secrets.MACOS_SIGN_P12 }}
           MACOS_SIGN_PASSWORD: ${{ secrets.MACOS_SIGN_PASSWORD }}
