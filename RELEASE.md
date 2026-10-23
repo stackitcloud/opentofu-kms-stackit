@@ -29,6 +29,8 @@ of the version, there is no version constant to bump.
 tags matching `v[0-9]+.[0-9]+.[0-9]+` and `v[0-9]+.[0-9]+.[0-9]+-*`, which:
 
 - builds binaries with CGO disabled for linux and darwin on amd64 and arm64
+- signs the darwin binaries with the Developer ID certificate and notarizes them
+  with Apple, see [macOS signing](#macos-signing)
 - packs each one with `LICENSE` and `README.md` into a `tar.gz`
 - writes `checksums.txt` over all archives
 - creates the GitHub release with notes generated from the commits
@@ -36,6 +38,44 @@ tags matching `v[0-9]+.[0-9]+.[0-9]+` and `v[0-9]+.[0-9]+.[0-9]+-*`, which:
 The version, commit and build date are stamped into the binary through ldflags,
 so `opentofu-kms-stackit -version` reports the tag it was built from. Builds from
 source report `dev`.
+
+## macOS signing
+
+GoReleaser signs and notarizes the darwin binaries through
+[quill](https://github.com/anchore/quill), so the job runs on Linux and needs no
+keychain. macOS Gatekeeper blocks binaries that are downloaded through a browser
+and not notarized. Snapshot builds skip signing. A tagged release fails if the
+certificate is missing.
+
+The release job reads these secrets from the `signing` GitHub environment:
+
+| Secret                   | Value                                                   |
+| ------------------------ | ------------------------------------------------------- |
+| `MACOS_SIGN_P12`         | base64 of the "Developer ID Application" `.p12`         |
+| `MACOS_SIGN_PASSWORD`    | password of the `.p12`                                  |
+| `MACOS_NOTARY_KEY`       | base64 of the App Store Connect API key `.p8`           |
+| `MACOS_NOTARY_KEY_ID`    | ID of the API key, also part of the `.p8` file name     |
+| `MACOS_NOTARY_ISSUER_ID` | issuer UUID shown above the App Store Connect key list  |
+
+Without the three notary secrets, GoReleaser signs the binaries but skips
+notarization.
+
+To set or rotate the secrets:
+
+```shell
+base64 -i developer_id_application.p12 | gh secret set MACOS_SIGN_P12 --env signing
+gh secret set MACOS_SIGN_PASSWORD --env signing
+base64 -i AuthKey_XXXXXXXXXX.p8 | gh secret set MACOS_NOTARY_KEY --env signing
+gh secret set MACOS_NOTARY_KEY_ID --env signing
+gh secret set MACOS_NOTARY_ISSUER_ID --env signing
+```
+
+To check a released binary on a Mac:
+
+```shell
+codesign --verify --strict --verbose=2 opentofu-kms-stackit
+spctl --assess --type install --verbose opentofu-kms-stackit
+```
 
 ## Pre-releases
 

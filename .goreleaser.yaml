@@ -21,6 +21,22 @@ builds:
     flags:
       - -trimpath
 
+# Signs and notarizes the darwin binaries with quill, before archiving.
+notarize:
+  macos:
+    # Snapshots skip it. Releases fail without the certificate.
+    - enabled: "{{ not .IsSnapshot }}"
+      ids:
+        - opentofu-kms-stackit
+      sign:
+        certificate: "{{ .Env.MACOS_SIGN_P12 }}"
+        password: "{{ .Env.MACOS_SIGN_PASSWORD }}"
+      notarize:
+        issuer_id: "{{ .Env.MACOS_NOTARY_ISSUER_ID }}"
+        key_id: "{{ .Env.MACOS_NOTARY_KEY_ID }}"
+        key: "{{ .Env.MACOS_NOTARY_KEY }}"
+        wait: true
+
 archives:
   # install.sh builds asset names from this template, keep them in sync.
   - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
